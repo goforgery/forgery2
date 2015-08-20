@@ -22,29 +22,29 @@ type Response struct {
 	events map[string][]func()
 }
 
-/*
-   Create a Mock http.ResponseWriter for testing.
-*/
-
+// Mock http.ResponseWriter for testing.
 type MockResponseWriter struct {
 	error   bool
 	headers http.Header
 	Written []byte
 }
 
-func (this *MockResponseWriter) Header() http.Header {
+// See http://golang.org/pkg/net/http/#ResponseWriter
+func (this MockResponseWriter) Header() http.Header {
 	return this.headers
 }
 
-func (this *MockResponseWriter) Write(data []byte) (int, error) {
+// See http://golang.org/pkg/net/http/#ResponseWriter
+func (this MockResponseWriter) Write(data []byte) (int, error) {
 	if this.error {
-		return 0, errors.New("")
+		return 0, errors.New("Forced error.")
 	}
-	this.Written = data
+	this.Written = append(this.Written, data...)
 	return len(data), nil
 }
 
-func (this *MockResponseWriter) WriteHeader(code int) {
+// See http://golang.org/pkg/net/http/#ResponseWriter
+func (this MockResponseWriter) WriteHeader(code int) {
 	return
 }
 
@@ -56,7 +56,7 @@ func CreateResponse(writer http.ResponseWriter) *Response {
 
 // Returns a Response that can be used for mocking in tests.
 func CreateResponseMock(error bool) *Response {
-	res := &MockResponseWriter{error, make(http.Header), []byte{}}
+	res := MockResponseWriter{error, http.Header{}, []byte{}}
 	return CreateResponse(res)
 }
 

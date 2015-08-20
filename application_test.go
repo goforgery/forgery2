@@ -3,6 +3,7 @@ package f
 import (
 	. "github.com/ricallinson/simplebdd"
 	"testing"
+	"fmt"
 )
 
 func TestApplication(t *testing.T) {
@@ -17,37 +18,36 @@ func TestApplication(t *testing.T) {
 
 		It("should return [1]", func() {
 			app.Use(func(req *Request, res *Response, next func()) {})
-			AssertEqual(len(app.stack), 1)
+			AssertEqual(len(app.handlers), 1)
 		})
 
 		It("should return [2]", func() {
 			app.Use("/foo", func(req *Request, res *Response, next func()) {})
 			app.Use("/bar", func(req *Request, res *Response, next func()) {})
-			AssertEqual(len(app.stack), 2)
+			AssertEqual(len(app.handlers), 2)
 		})
 
 		It("should return a [/] from an empty string", func() {
 			app.Use("", func(req *Request, res *Response, next func()) {})
-			m := app.stack[0]
+			m := app.handlers[0]
 			AssertEqual(m.Route, "/")
 		})
 
 		It("should return the route with the trailing slash removed [/foo]", func() {
 			app.Use("/foo/", func(req *Request, res *Response, next func()) {})
-			m := app.stack[0]
+			m := app.handlers[0]
 			AssertEqual(m.Route, "/foo")
 		})
 
 		It("should return the lower case string [/foo]", func() {
 			app.Use("/FOO", func(req *Request, res *Response, next func()) {})
-			m := app.stack[0]
+			m := app.handlers[0]
 			AssertEqual(m.Route, "/foo")
 		})
 	})
 
 	Describe("Handle()", func() {
 
-		var mock *MockResponseWriter
 		var app *Application
 		var req *Request
 		var res *Response
@@ -60,12 +60,15 @@ func TestApplication(t *testing.T) {
 
 		It("should return not found", func() {
 			app.Handle(req, res, 0)
+			mock := res.Writer.(MockResponseWriter)
+			fmt.Println(res.Writer)
 			AssertEqual(string(mock.Written), "Cannot  /")
 		})
 
 		It("should return not found", func() {
 			req.Method = "GET"
 			app.Handle(req, res, 0)
+			mock := res.Writer.(MockResponseWriter)
 			AssertEqual(string(mock.Written), "Cannot GET /")
 		})
 
@@ -210,7 +213,7 @@ func TestApplication(t *testing.T) {
 
 		It("should return [false] as the writer throws an error", func() {
 			test := true
-			res = CreateResponseMock(false)
+			res = CreateResponseMock(true)
 			app.Use("/", func(req *Request, res *Response, next func()) {
 				test = res.Write("foo")
 			})

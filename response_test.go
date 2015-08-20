@@ -54,7 +54,7 @@ func TestResponse(t *testing.T) {
 		})
 
 		It("should return [false] after writing foo", func() {
-			res := CreateResponseMock(false)
+			res := CreateResponseMock(true)
 			test := res.Write("foo")
 			AssertEqual(test, false)
 		})
@@ -69,7 +69,7 @@ func TestResponse(t *testing.T) {
 		})
 
 		It("should return [false] after writing 1, 2, 3", func() {
-			res := CreateResponseMock(false)
+			res := CreateResponseMock(true)
 			test := res.WriteBytes([]byte{1, 2, 3})
 			AssertEqual(test, false)
 		})
