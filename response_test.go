@@ -1,4 +1,4 @@
-package f2
+package f
 
 import (
 	. "github.com/ricallinson/simplebdd"
