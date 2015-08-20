@@ -45,7 +45,7 @@ func (this MockResponseWriter) Write(data []byte) (int, error) {
 
 // See http://golang.org/pkg/net/http/#ResponseWriter
 func (this MockResponseWriter) WriteHeader(code int) {
-	return
+	//...
 }
 
 // Returns a new Response.
@@ -55,8 +55,8 @@ func CreateResponse(writer http.ResponseWriter) *Response {
 }
 
 // Returns a Response that can be used for mocking in tests.
-func CreateResponseMock(error bool) *Response {
-	res := MockResponseWriter{error, http.Header{}, []byte{}}
+func CreateResponseMock(error bool, buf []byte) (*Response) {
+	res := MockResponseWriter{error, http.Header{}, buf}
 	return CreateResponse(res)
 }
 

@@ -82,7 +82,7 @@ func (this *Application) Handle(req *Request, res *Response, index int) {
 		layer = handler{} // no
 	} else {
 		layer = this.handlers[index] // yes
-		index++                   // increment the index by 1
+		index++                      // increment the index by 1
 	}
 	// If there are no more layers and no headers have been sent return a 404.
 	if layer.Handle == nil && res.HeaderSent == false {
