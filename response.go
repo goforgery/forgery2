@@ -1,6 +1,7 @@
 package f
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"net/http"
@@ -26,7 +27,7 @@ type Response struct {
 type MockResponseWriter struct {
 	error   bool
 	headers http.Header
-	Written []byte
+	Buffer  *bytes.Buffer
 }
 
 // See http://golang.org/pkg/net/http/#ResponseWriter
@@ -39,8 +40,7 @@ func (this MockResponseWriter) Write(data []byte) (int, error) {
 	if this.error {
 		return 0, errors.New("Forced error.")
 	}
-	this.Written = append(this.Written, data...)
-	return len(data), nil
+	return this.Buffer.Write(data)
 }
 
 // See http://golang.org/pkg/net/http/#ResponseWriter
@@ -55,9 +55,10 @@ func CreateResponse(writer http.ResponseWriter) *Response {
 }
 
 // Returns a Response that can be used for mocking in tests.
-func CreateResponseMock(error bool, buf []byte) (*Response) {
+func CreateResponseMock(error bool) (*Response, *bytes.Buffer) {
+	buf := bytes.NewBufferString("")
 	res := MockResponseWriter{error, http.Header{}, buf}
-	return CreateResponse(res)
+	return CreateResponse(res), buf
 }
 
 // Register a listener function for an event.

@@ -10,7 +10,7 @@ func TestResponse(t *testing.T) {
 	Describe("Response.Emit()", func() {
 
 		It("should return [0]", func() {
-			res := CreateResponseMock(false, []byte{})
+			res, _ := CreateResponseMock(false)
 			test := 0
 			res.On("foo", func() {
 				test++
@@ -19,7 +19,7 @@ func TestResponse(t *testing.T) {
 		})
 
 		It("should return [1]", func() {
-			res := CreateResponseMock(false, []byte{})
+			res, _ := CreateResponseMock(false)
 			test := 0
 			res.On("foo", func() {
 				test++
@@ -29,7 +29,7 @@ func TestResponse(t *testing.T) {
 		})
 
 		It("should return [3]", func() {
-			res := CreateResponseMock(false, []byte{})
+			res, _ := CreateResponseMock(false)
 			test := 0
 			res.On("foo", func() {
 				test++
@@ -48,13 +48,13 @@ func TestResponse(t *testing.T) {
 	Describe("Response.Write()", func() {
 
 		It("should return [true] after writing foo", func() {
-			res := CreateResponseMock(false, []byte{})
+			res, _ := CreateResponseMock(false)
 			test := res.Write("foo")
 			AssertEqual(test, true)
 		})
 
 		It("should return [false] after writing foo", func() {
-			res := CreateResponseMock(true, []byte{})
+			res, _ := CreateResponseMock(true)
 			test := res.Write("foo")
 			AssertEqual(test, false)
 		})
@@ -63,13 +63,13 @@ func TestResponse(t *testing.T) {
 	Describe("Response.WriteBytes()", func() {
 
 		It("should return [true] after writing 1, 2, 3", func() {
-			res := CreateResponseMock(false, []byte{})
+			res, _ := CreateResponseMock(false)
 			test := res.WriteBytes([]byte{1, 2, 3})
 			AssertEqual(test, true)
 		})
 
 		It("should return [false] after writing 1, 2, 3", func() {
-			res := CreateResponseMock(true, []byte{})
+			res, _ := CreateResponseMock(true)
 			test := res.WriteBytes([]byte{1, 2, 3})
 			AssertEqual(test, false)
 		})
@@ -77,7 +77,7 @@ func TestResponse(t *testing.T) {
 
 	Describe("Response.SetHeaders()", func() {
 
-		res := CreateResponseMock(false, []byte{})
+		res, _ := CreateResponseMock(false)
 
 		It("should return [value1] from setting the headers", func() {
 			headers := map[string]string{"key0": "value0", "key1": "value1"}
@@ -102,7 +102,7 @@ func TestResponse(t *testing.T) {
 
 	Describe("Response.RemoveHeader()", func() {
 
-		res := CreateResponseMock(false, []byte{})
+		res, _ := CreateResponseMock(false)
 
 		It("should return [value1] from setting the headers", func() {
 			res.SetHeader("foo", "bar")

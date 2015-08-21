@@ -1,7 +1,7 @@
 package f
 
 import (
-	// "fmt"
+	"bytes"
 	. "github.com/ricallinson/simplebdd"
 	"testing"
 )
@@ -51,23 +51,25 @@ func TestApplication(t *testing.T) {
 		var app *Application
 		var req *Request
 		var res *Response
-		var buf []byte
+		var buf *bytes.Buffer
 
 		BeforeEach(func() {
 			app = CreateApp()
 			req = CreateRequestMock()
-			res = CreateResponseMock(false, buf)
+			res, buf = CreateResponseMock(false)
 		})
 
 		It("should return not found", func() {
 			app.Handle(req, res, 0)
-			AssertEqual(string(buf), "Cannot  /")
+			body := buf.String()
+			AssertEqual(body, "Cannot  /")
 		})
 
 		It("should return not found", func() {
 			req.Method = "GET"
 			app.Handle(req, res, 0)
-			AssertEqual(string(buf), "Cannot GET /")
+			body := buf.String()
+			AssertEqual(body, "Cannot GET /")
 		})
 
 		It("should return [true] after default function is called", func() {
@@ -211,7 +213,7 @@ func TestApplication(t *testing.T) {
 
 		It("should return [false] as the writer throws an error", func() {
 			test := true
-			res = CreateResponseMock(true, []byte{})
+			res, _ = CreateResponseMock(true)
 			app.Use("/", func(req *Request, res *Response, next func()) {
 				test = res.Write("foo")
 			})
