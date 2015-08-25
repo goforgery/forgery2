@@ -10,7 +10,7 @@ func TestRequest(t *testing.T) {
 	var req *Request
 
 	BeforeEach(func() {
-		req = CreateRequestMock()
+		req = CreateRequestMock(nil)
 	})
 
 	Report(t)

@@ -55,8 +55,8 @@ func TestApplication(t *testing.T) {
 
 		BeforeEach(func() {
 			app = CreateApp()
-			req = CreateRequestMock()
-			res, buf = CreateResponseMock(false)
+			req = CreateRequestMock(app)
+			res, buf = CreateResponseMock(app, false)
 		})
 
 		It("should return not found", func() {
@@ -213,7 +213,7 @@ func TestApplication(t *testing.T) {
 
 		It("should return [false] as the writer throws an error", func() {
 			test := true
-			res, _ = CreateResponseMock(true)
+			res, _ = CreateResponseMock(nil, true)
 			app.Use("/", func(req *Request, res *Response, next func()) {
 				test = res.Write("foo")
 			})

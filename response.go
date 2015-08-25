@@ -84,10 +84,10 @@ func CreateResponse(writer http.ResponseWriter, app *Application/*, next func()*
 }
 
 // Returns a Response that can be used for mocking in tests.
-func CreateResponseMock(error bool) (*Response, *bytes.Buffer) {
+func CreateResponseMock(app *Application, error bool) (*Response, *bytes.Buffer) {
 	buf := bytes.NewBufferString("")
 	res := MockResponseWriter{error, http.Header{}, buf}
-	return CreateResponse(res, nil), buf
+	return CreateResponse(res, app), buf
 }
 
 // Register a listener function for an event.

@@ -127,13 +127,13 @@ func CreateRequest(raw *http.Request, app *Application) *Request {
 }
 
 // Returns a Request that can be used for mocking in tests.
-func CreateRequestMock() *Request {
+func CreateRequestMock(app *Application) *Request {
 	req := &http.Request{
 		Header:     http.Header{},
 		RequestURI: "/",
 		URL:        new(url.URL),
 	}
-	return CreateRequest(req, nil)
+	return CreateRequest(req, app)
 }
 
 
