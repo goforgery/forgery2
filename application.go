@@ -21,8 +21,6 @@ type handler struct {
 
 type Handle func(*Request, *Response, func())
 
-type HandleError func(string, *Request, *Response, func())
-
 // Create a new forgery application.
 func CreateApp() *Application {
 	this := &Application{}
