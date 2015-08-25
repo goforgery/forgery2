@@ -133,7 +133,7 @@ func CreateRequestMock() *Request {
 		RequestURI: "/",
 		URL:        new(url.URL),
 	}
-	return CreateRequest(req)
+	return CreateRequest(req, nil)
 }
 
 

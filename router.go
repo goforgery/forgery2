@@ -92,8 +92,9 @@ func (this *Router) Middleware(app *Application) func(req *Request, res *Respons
 	this.ParamFuncs = map[string]func(*Request, *Response, func()){}
 	return func(req *Request, res *Response, next func()) {
 		// Create the f.Request and f.Response from stackr.Request and stackr.Response
-		freq := CreateRequest(req, app)
-		fres := CreateResponse(res, next, app)
+		freq := CreateRequest(req.Request, app)
+		fres := CreateResponse(res.Writer, app)
+		fres.SetNext(next)
 		freq.SetResponse(fres) // Add the Response to the Request
 		fres.SetRequest(freq)  // Add the Request to the Response
 		// Handle the request.

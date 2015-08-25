@@ -71,12 +71,12 @@ func (this MockResponseWriter) WriteHeader(code int) {
 }
 
 // Returns a new Response.
-func CreateResponse(writer http.ResponseWriter, next func(), app *Application) *Response {
+func CreateResponse(writer http.ResponseWriter, app *Application/*, next func()*/) *Response {
 	this := &Response{}
 	this.Writer = writer
 	this.StatusCode = 200
 	this.events = map[string][]func(){}
-	this.SetNext(next)
+	// this.SetNext(next)
 	this.SetApplication(app)
 	this.Charset = "utf-8"
 	this.Locals = map[string]string{}
@@ -87,7 +87,7 @@ func CreateResponse(writer http.ResponseWriter, next func(), app *Application) *
 func CreateResponseMock(error bool) (*Response, *bytes.Buffer) {
 	buf := bytes.NewBufferString("")
 	res := MockResponseWriter{error, http.Header{}, buf}
-	return CreateResponse(res), buf
+	return CreateResponse(res, nil), buf
 }
 
 // Register a listener function for an event.
@@ -180,7 +180,8 @@ func (this *Response) End(data string) bool {
 
 // Return a clone of the this Response.
 func (this *Response) Clone() *Response {
-	r := CreateResponse(this.Writer, this.next, this.app)
+	r := CreateResponse(this.Writer, this.app)
+	r.SetNext(this.next)
 	r.SetRequest(this.req)
 	return r
 }
