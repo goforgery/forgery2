@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/ricallinson/httputils"
+	"github.com/goforgery/forgery2/httputils"
 	"hash/crc32"
 	"html"
 	"mime"

@@ -2,7 +2,7 @@ package f
 
 import (
 	"encoding/json"
-	"github.com/ricallinson/httputils"
+	"github.com/goforgery/forgery2/httputils"
 	"net/http"
 	"net/url"
 	"regexp"

@@ -3,7 +3,7 @@ package f
 import (
 	"errors"
 	"fmt"
-	"github.com/ricallinson/httputils"
+	"github.com/goforgery/forgery2/httputils"
 	"log"
 	"net/http"
 	"os"
