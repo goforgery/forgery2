@@ -16,11 +16,7 @@ func TestResponse(t *testing.T) {
 	var buf *bytes.Buffer
 
 	BeforeEach(func() {
-		app = CreateApp()
-		req = CreateRequestMock(app)
-		res, buf = CreateResponseMock(app, false)
-		res.SetRequest(req)
-		req.SetResponse(res)
+		app, req, res, buf = CreateAppMock()
 	})
 
 	Describe("Response.Emit()", func() {

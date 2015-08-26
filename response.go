@@ -1,9 +1,7 @@
 package f
 
 import (
-	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/goforgery/forgery2/httputils"
 	"hash/crc32"
@@ -45,31 +43,6 @@ type Response struct {
 	Locals map[string]string
 }
 
-// Mock http.ResponseWriter for testing.
-type MockResponseWriter struct {
-	error   bool
-	headers http.Header
-	Buffer  *bytes.Buffer
-}
-
-// See http://golang.org/pkg/net/http/#ResponseWriter
-func (this MockResponseWriter) Header() http.Header {
-	return this.headers
-}
-
-// See http://golang.org/pkg/net/http/#ResponseWriter
-func (this MockResponseWriter) Write(data []byte) (int, error) {
-	if this.error {
-		return 0, errors.New("Forced error.")
-	}
-	return this.Buffer.Write(data)
-}
-
-// See http://golang.org/pkg/net/http/#ResponseWriter
-func (this MockResponseWriter) WriteHeader(code int) {
-	//...
-}
-
 // Returns a new Response.
 func CreateResponse(writer http.ResponseWriter, app *Application /*, next func()*/) *Response {
 	this := &Response{}
@@ -81,13 +54,6 @@ func CreateResponse(writer http.ResponseWriter, app *Application /*, next func()
 	this.Charset = "utf-8"
 	this.Locals = map[string]string{}
 	return this
-}
-
-// Returns a Response that can be used for mocking in tests.
-func CreateResponseMock(app *Application, error bool) (*Response, *bytes.Buffer) {
-	buf := bytes.NewBufferString("")
-	res := MockResponseWriter{error, http.Header{}, buf}
-	return CreateResponse(res, app), buf
 }
 
 // Register a listener function for an event.

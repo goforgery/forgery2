@@ -126,16 +126,6 @@ func CreateRequest(raw *http.Request, app *Application) *Request {
 	return this
 }
 
-// Returns a Request that can be used for mocking in tests.
-func CreateRequestMock(app *Application) *Request {
-	req := &http.Request{
-		Header:     http.Header{},
-		RequestURI: "/",
-		URL:        new(url.URL),
-	}
-	return CreateRequest(req, app)
-}
-
 // Set the Application this Request will use.
 func (this *Request) SetApplication(app *Application) {
 	this.app = app

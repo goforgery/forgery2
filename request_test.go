@@ -16,9 +16,7 @@ func TestRequest(t *testing.T) {
 	var res *Response
 
 	BeforeEach(func() {
-		app = CreateApp()
-		req = CreateRequestMock(app)
-		res, _ = CreateResponseMock(app, false)
+		app, req, res, _ = CreateAppMock()
 	})
 
 	Describe("CreateRequest()", func() {

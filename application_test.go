@@ -54,9 +54,7 @@ func TestApplication(t *testing.T) {
 		var buf *bytes.Buffer
 
 		BeforeEach(func() {
-			app = CreateApp()
-			req = CreateRequestMock(app)
-			res, buf = CreateResponseMock(app, false)
+			app, req, res, buf = CreateAppMock()
 		})
 
 		It("should return not found", func() {
