@@ -1,11 +1,11 @@
 package f
 
 import (
+	"bytes"
 	. "github.com/ricallinson/simplebdd"
-	"testing"
 	"net/http"
 	"strings"
-	"bytes"
+	"testing"
 )
 
 func TestResponse(t *testing.T) {

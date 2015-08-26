@@ -23,7 +23,6 @@ type Route struct {
 	Strict bool
 }
 
-
 // This func is in the serving path so has to be super fast!
 //
 // method: An uppercase HTTP Verb.

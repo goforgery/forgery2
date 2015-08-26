@@ -1,14 +1,14 @@
 package f
 
 import (
-	"github.com/ricallinson/httputils"
 	"errors"
 	"fmt"
+	"github.com/ricallinson/httputils"
 	"log"
 	"net/http"
 	"os"
-	"strings"
 	"path/filepath"
+	"strings"
 )
 
 const (

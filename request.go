@@ -1,13 +1,13 @@
 package f
 
 import (
+	"encoding/json"
+	"github.com/ricallinson/httputils"
 	"net/http"
 	"net/url"
 	"regexp"
-	"encoding/json"
-	"strings"
-	"github.com/ricallinson/httputils"
 	"strconv"
+	"strings"
 )
 
 // A Request represents an HTTP request received by the server.
@@ -135,7 +135,6 @@ func CreateRequestMock(app *Application) *Request {
 	}
 	return CreateRequest(req, app)
 }
-
 
 // Set the Application this Request will use.
 func (this *Request) SetApplication(app *Application) {

@@ -2,19 +2,19 @@ package f
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
-	"net/http"
-	"time"
-	"encoding/json"
 	"github.com/ricallinson/httputils"
-	"net/url"
-	"strings"
-	"path/filepath"
 	"hash/crc32"
 	"html"
-	"regexp"
 	"mime"
+	"net/http"
+	"net/url"
+	"path/filepath"
+	"regexp"
+	"strings"
+	"time"
 )
 
 // Response represents the response from an HTTP request.
@@ -71,7 +71,7 @@ func (this MockResponseWriter) WriteHeader(code int) {
 }
 
 // Returns a new Response.
-func CreateResponse(writer http.ResponseWriter, app *Application/*, next func()*/) *Response {
+func CreateResponse(writer http.ResponseWriter, app *Application /*, next func()*/) *Response {
 	this := &Response{}
 	this.Writer = writer
 	this.StatusCode = 200
@@ -177,7 +177,6 @@ func (this *Response) End(data string) bool {
 	return status
 }
 
-
 // Return a clone of the this Response.
 func (this *Response) Clone() *Response {
 	r := CreateResponse(this.Writer, this.app)
@@ -219,7 +218,6 @@ func (this *Response) Set(f string, v string) {
 func (this *Response) Get(f string) string {
 	return this.Writer.Header().Get(f)
 }
-
 
 // Set cookie "name" to "value", where "value" may be a string or interface
 // converted to JSON. The "path" option defaults to "/".
