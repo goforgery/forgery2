@@ -233,6 +233,7 @@ func (this *Application) All(path string, fn ...func(*Request, *Response, func()
 // pre-conditions on a route then pass control to subsequent routes when there is no reason to
 // proceed with the route matched.
 func (this *Application) Verb(verb string, path string, funcs ...func(*Request, *Response, func())) {
+	// The first time a Route is added make sure there is some Router middleware to handle it.
 	if this.usedRouter == false {
 		this.Router.CaseSensitive = this.Enabled("case sensitive routing")
 		this.Router.Strict = this.Enabled("strict routing")
