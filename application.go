@@ -17,7 +17,7 @@ const (
 )
 
 type Application struct {
-	Env      string
+	// An array of handler functions.
 	handlers []handler
 	// Application local variables are provided to all templates rendered within the application.
 	// This is useful for providing helper functions to templates, as well as app-level data.
@@ -51,10 +51,6 @@ type Handle func(*Request, *Response, func())
 // * "views" The view directory path, defaulting to "./views"
 func CreateApp() *Application {
 	this := &Application{}
-	this.Env = os.Getenv("GO_ENV")
-	if this.Env == "" {
-		this.Env = "development"
-	}
 	this.Locals = map[string]string{}
 	this.Router = &Router{}
 	this.settings = map[string]string{}
@@ -313,7 +309,7 @@ func (this *Application) Use(in ...interface{}) *Application {
 func (this *Application) Handle(req *Request, res *Response, index int) {
 	// For each call to Handle we want to catch anything that panics unless in development mode.
 	defer func() {
-		if this.Env != "development" {
+		if this.Get("env") != "development" {
 			err := recover()
 			if err != nil {
 				res.Error = errors.New(fmt.Sprint(err))
