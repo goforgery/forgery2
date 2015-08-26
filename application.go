@@ -366,7 +366,11 @@ func (this *Application) Handle(req *Request, res *Response, index int) {
 
 // ServeHTTP calls .Handle(req, res).
 func (this *Application) ServeHTTP(res http.ResponseWriter, req *http.Request) {
-	this.Handle(CreateRequest(req, this), CreateResponse(res, this), 0)
+	freq := CreateRequest(req, this)
+	fres := CreateResponse(res, this)
+	freq.SetResponse(fres)
+	fres.SetRequest(freq)
+	this.Handle(freq, fres, 0)
 }
 
 // Listen for connections on HTTP.
