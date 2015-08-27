@@ -3,7 +3,7 @@ package f
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/goforgery/forgery2/httputils"
+	"github.com/goforgery/httphelp"
 	"hash/crc32"
 	"html"
 	"mime"
