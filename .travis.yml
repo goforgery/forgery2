@@ -3,4 +3,5 @@ go:
     - 1.4
     - tip
 install:
+    - go get github.com/goforgery/httphelp
     - go get github.com/ricallinson/simplebdd
