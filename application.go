@@ -24,7 +24,7 @@ type Application struct {
 	Locals map[string]string
 	// The Router middleware function.
 	Router *Router
-	// Has the Router been added to stackr.
+	// Has the Router been added to the handlers.
 	usedRouter bool
 	// Stores the applications settings.
 	settings map[string]string
