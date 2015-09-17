@@ -40,3 +40,7 @@ Forgery is a minimal and flexible golang web application framework, providing a 
 ## Benchmark
 
     go test -bench=. -run=BENCH_ONLY
+
+## Notes
+
+This project started out as a clone of the superb Node.js library [Express](http://expressjs.com/).
