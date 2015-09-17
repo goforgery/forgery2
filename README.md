@@ -2,6 +2,8 @@
 
 [![Build Status](https://secure.travis-ci.org/goforgery/forgery2.png?branch=master)](http://travis-ci.org/goforgery/forgery2)
 
+__CURRENTLY UNSTABLE VERSION__
+
 Forgery is a minimal and flexible golang web application framework, providing a robust set of features for building single and multi-page, web applications.
 
     package main
