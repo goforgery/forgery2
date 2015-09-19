@@ -205,7 +205,7 @@ func (this *Application) Engine(ext string, fn Renderer) {
 func (this *Application) Render(view string, i ...interface{}) (string, error) {
 	ext := filepath.Ext(view)
 	if _, ok := this.engines[ext]; ok == false {
-		return "", errors.New("Engine not found.")
+		return "", errors.New("View engine not found.")
 	}
 	file := filepath.Join(this.Get("views"), view)
 	if _, err := os.Stat(file); err != nil || os.IsNotExist(err) {
