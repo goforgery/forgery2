@@ -565,7 +565,6 @@ func (this *Response) Render(view string, i ...interface{}) {
 	s, err := this.app.Render(view, i...)
 	if err != nil {
 		// Need to do something about error reporting here.
-		fmt.Println(err)
 		this.Send(err.Error())
 		return
 	}
