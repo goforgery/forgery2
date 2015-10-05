@@ -156,6 +156,32 @@ func (this *Request) Queries() map[string]string {
 	return this.queries
 }
 
+// Return the value of param "name" when present. Lookup is performed in the following order:
+//
+// * Params
+// * Body
+// * Query
+//
+// Direct access to req.body, req.params, and req.query should be favored for clarity -
+// unless you truly accept input from each object.
+func (this *Request) Param(n string) string {
+	var v string
+	var ok bool
+	v, ok = this.Params[n]
+	if ok {
+		return v
+	}
+	v, ok = this.Bodies()[n]
+	if ok {
+		return v
+	}
+	v, ok = this.Queries()[n]
+	if ok {
+		return v
+	}
+	return ""
+}
+
 // Return the value for the given key if found in the request files.
 func (this *Request) File(key string) interface{} {
 	return this.Files()[key]
@@ -210,32 +236,6 @@ func (this *Request) SignedCookie(n string, i ...interface{}) string {
 	}
 	json.Unmarshal([]byte(v), i[0])
 	return v
-}
-
-// Return the value of param "name" when present. Lookup is performed in the following order:
-//
-// * Params
-// * Body
-// * Query
-//
-// Direct access to req.body, req.params, and req.query should be favored for clarity -
-// unless you truly accept input from each object.
-func (this *Request) Param(n string) string {
-	var v string
-	var ok bool
-	v, ok = this.Params[n]
-	if ok {
-		return v
-	}
-	v, ok = this.Bodies()[n]
-	if ok {
-		return v
-	}
-	v, ok = this.Queries()[n]
-	if ok {
-		return v
-	}
-	return ""
 }
 
 // Get the case-insensitive request header field.
