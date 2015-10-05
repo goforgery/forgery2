@@ -72,15 +72,17 @@ type Request struct {
 
 // Returns a new Request.
 func CreateRequest(raw *http.Request, app *Application) *Request {
-	this := &Request{
-		Request:     raw,
-		Url:         raw.URL.RequestURI(),
-		OriginalUrl: raw.URL.RequestURI(),
-	}
-	if this.Map == nil {
-		this.Map = map[string]interface{}{}
-	}
-	this.SetApplication(app)
+	this := &Request{}
+	this.Request = raw
+	this.Url = raw.URL.RequestURI()
+	this.OriginalUrl = raw.URL.RequestURI()
+	// Helpers for standard headers.
+	this.Path = this.URL.Path
+	this.Xhr = this.Header.Get("X-Requested-With") == "XMLHttpRequest"
+	this.Protocol = this.URL.Scheme
+	this.Secure = this.Protocol == "https"
+	this.Params = map[string]string{}
+	this.app = app
 	if t, v := this.app.Get("trust proxy"), this.Header.Get("X-Forwarded-For"); len(t) > 0 && len(v) > 0 {
 		s := regexp.MustCompile(" *, *").Split(v, -1)
 		this.Ip = s[0]
@@ -89,12 +91,10 @@ func CreateRequest(raw *http.Request, app *Application) *Request {
 		this.Ip = this.RemoteAddr
 		this.Ips = []string{}
 	}
-	// Helpers for standard headers.
-	this.Path = this.URL.Path
-	this.Xhr = this.Header.Get("X-Requested-With") == "XMLHttpRequest"
-	this.Protocol = this.URL.Scheme
-	this.Secure = this.Protocol == "https"
-	this.Params = map[string]string{}
+	// Could have been set by middleware.
+	if this.Map == nil {
+		this.Map = map[string]interface{}{}
+	}
 	// Could have been set by middleware.
 	if this.Body == nil {
 		this.Body = map[string]string{}
@@ -124,11 +124,6 @@ func CreateRequest(raw *http.Request, app *Application) *Request {
 		this.Files = map[string]interface{}{}
 	}
 	return this
-}
-
-// Set the Application this Request will use.
-func (this *Request) SetApplication(app *Application) {
-	this.app = app
 }
 
 // Set the Response this Response will use.
