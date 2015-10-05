@@ -29,7 +29,8 @@ func TestRequest(t *testing.T) {
 			app.Enable("trust proxy")
 			httpReq.Header.Set("X-Forwarded-For", "129.78.138.66, 129.78.64.103")
 			newReq := CreateRequest(httpReq, app)
-			AssertEqual(newReq.Ips[1], "129.78.64.103")
+			AssertEqual(newReq.Ip(), "129.78.138.66")
+			AssertEqual(newReq.Ips()[1], "129.78.64.103")
 		})
 	})
 
@@ -77,42 +78,42 @@ func TestRequest(t *testing.T) {
 	Describe("Param()", func() {
 
 		It("should return [bar]", func() {
-			req.Params["foo"] = "bar"
+			req.Params = map[string]string{"foo": "bar"}
 			r := req.Param("foo")
 			AssertEqual(r, "bar")
 		})
 
 		It("should return [bar]", func() {
-			req.Body["foo"] = "bar"
+			req.bodies = map[string]string{"foo": "bar"}
 			r := req.Param("foo")
 			AssertEqual(r, "bar")
 		})
 
 		It("should return [bar]", func() {
-			req.Query["foo"] = "bar"
+			req.queries = map[string]string{"foo": "bar"}
 			r := req.Param("foo")
 			AssertEqual(r, "bar")
 		})
 
 		It("should return [bar]", func() {
-			req.Params["foo"] = "bar"
-			req.Body["foo"] = "bar1"
-			req.Query["foo"] = "bar2"
+			req.Params = map[string]string{"foo": "bar"}
+			req.bodies = map[string]string{"foo": "bar1"}
+			req.queries = map[string]string{"foo": "bar2"}
 			r := req.Param("foo")
 			AssertEqual(r, "bar")
 		})
 
 		It("should return [bar]", func() {
-			req.Body["foo"] = "bar"
-			req.Query["foo"] = "bar1"
+			req.bodies = map[string]string{"foo": "bar"}
+			req.queries = map[string]string{"foo": "bar1"}
 			r := req.Param("foo")
 			AssertEqual(r, "bar")
 		})
 
 		It("should return []", func() {
-			req.Params["foo"] = "bar"
-			req.Body["foo"] = "bar1"
-			req.Query["foo"] = "bar2"
+			req.Params = map[string]string{"foo": "bar"}
+			req.bodies = map[string]string{"foo": "bar1"}
+			req.queries = map[string]string{"foo": "bar2"}
 			r := req.Param("bar")
 			AssertEqual(r, "")
 		})

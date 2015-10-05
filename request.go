@@ -26,13 +26,13 @@ type Request struct {
 	// This feature is provided by the bodyParser() middleware, though other body
 	// parsing middleware may follow this convention as well.
 	// This property defaults to {} when bodyParser() is used.
-	Body map[string]string
+	bodies map[string]string
 	// This property is a map containing the parsed query-string, defaulting to {}.
-	Query map[string]string
+	queries map[string]string
 	// This property is a map of the files uploaded. This feature is provided
 	// by the bodyParser() middleware, though other body parsing middleware may
 	// follow this convention as well. This property defaults to {} when bodyParser() is used.
-	Files map[string]interface{}
+	files map[string]interface{}
 	// Holds general key/values over the lifetime of the request.
 	Map map[string]interface{}
 	// The forgery.Response matched to this request.
@@ -40,11 +40,11 @@ type Request struct {
 	// The application server.
 	app *Application
 	// Return the remote address, or when "trust proxy" is enabled - the upstream address.
-	Ip string
+	ip string
 	// When "trust proxy" is `true`, parse the "X-Forwarded-For" ip address list and return a slice,
 	// otherwise an empty slice is returned. For example if the value were "client, proxy1, proxy2"
 	// you would receive the slice {"client", "proxy1", "proxy2"} where "proxy2" is the furthest down-stream.
-	Ips []string
+	ips []string
 	// Returns the request URL pathname.
 	Path string
 	// Check if the request was issued with the "X-Requested-With" header field set to "XMLHttpRequest" (jQuery etc).
@@ -83,45 +83,9 @@ func CreateRequest(raw *http.Request, app *Application) *Request {
 	this.Secure = this.Protocol == "https"
 	this.Params = map[string]string{}
 	this.app = app
-	if t, v := this.app.Get("trust proxy"), this.Header.Get("X-Forwarded-For"); len(t) > 0 && len(v) > 0 {
-		s := regexp.MustCompile(" *, *").Split(v, -1)
-		this.Ip = s[0]
-		this.Ips = s
-	} else {
-		this.Ip = this.RemoteAddr
-		this.Ips = []string{}
-	}
-	// Could have been set by middleware.
+	// This could have been set by middleware so check if it's empty.
 	if this.Map == nil {
 		this.Map = map[string]interface{}{}
-	}
-	// Could have been set by middleware.
-	if this.Body == nil {
-		this.Body = map[string]string{}
-		// Parse the form data if there was any.
-		this.ParseForm()
-		// Copy the first item for each key from this.Request.PostForm[] into this.Body
-		// This has a performance impact so is it worth it?
-		// The alternative is to access this.PostForm[] from this.Param() like so;
-		//     v, ok = this.PostForm[n]
-		for k, v := range this.PostForm {
-			this.Body[k] = v[0]
-		}
-	}
-	// Could have been set by middleware.
-	if this.Query == nil {
-		this.Query = map[string]string{}
-		// Copy the first item for each key from this.Request.URL.Query() into this.Query
-		// This has a performance impact so is it worth it?
-		// The alternative is to access this.URL.Query() from this.Param() like so;
-		//     v, ok = this.URL.Query().Get(n)
-		for k, v := range this.URL.Query() {
-			this.Query[k] = v[0]
-		}
-	}
-	// Could have been set by middleware.
-	if this.Files == nil {
-		this.Files = map[string]interface{}{}
 	}
 	return this
 }
@@ -129,6 +93,80 @@ func CreateRequest(raw *http.Request, app *Application) *Request {
 // Set the Response this Response will use.
 func (this *Request) SetResponse(res *Response) {
 	this.res = res
+}
+
+// Returns the requesting IP.
+func (this *Request) Ip() string {
+	return this.Ips()[0]
+}
+
+// Returns the requesting IP chain.
+func (this *Request) Ips() []string {
+	if this.ips == nil {
+		if t, v := this.app.Get("trust proxy"), this.Header.Get("X-Forwarded-For"); len(t) > 0 && len(v) > 0 {
+			s := regexp.MustCompile(" *, *").Split(v, -1)
+			this.ip = s[0]
+			this.ips = s
+		} else {
+			this.ip = this.RemoteAddr
+			this.ips = []string{}
+		}
+	}
+	return this.ips
+}
+
+// Return the value for the given key if found in the request body.
+func (this *Request) Body(key string) string {
+	return this.Bodies()[key]
+}
+
+// Return a map of values passed as the request body.
+func (this *Request) Bodies() map[string]string {
+	if this.bodies == nil {
+		this.bodies = map[string]string{}
+		// Parse the form data if there was any.
+		this.ParseForm()
+		// Copy the first item for each key from this.Request.PostForm[] into this.body
+		// The alternative is to access this.PostForm[] from this.Param() like so;
+		//     v, ok = this.PostForm[n]
+		for k, v := range this.PostForm {
+			this.bodies[k] = v[0]
+		}
+	}
+	return this.bodies
+}
+
+// Return the value for the given key if found in the request query.
+func (this *Request) Query(key string) string {
+	return this.Queries()[key]
+}
+
+// Return a map of values passed as the request query.
+func (this *Request) Queries() map[string]string {
+	if this.queries == nil {
+		this.queries = map[string]string{}
+		// Copy the first item for each key from this.Request.URL.Query() into this.query
+		// This has a performance impact so is it worth it?
+		// The alternative is to access this.URL.Query() from this.Param() like so;
+		//     v, ok = this.URL.Query().Get(n)
+		for k, v := range this.URL.Query() {
+			this.queries[k] = v[0]
+		}
+	}
+	return this.queries
+}
+
+// Return the value for the given key if found in the request files.
+func (this *Request) File(key string) interface{} {
+	return this.Files()[key]
+}
+
+// Return a map of values passed as the request files.
+func (this *Request) Files() map[string]interface{} {
+	if this.files == nil {
+		this.files = map[string]interface{}{}
+	}
+	return this.files
 }
 
 // Contains the cookies sent by the user-agent.
@@ -189,11 +227,11 @@ func (this *Request) Param(n string) string {
 	if ok {
 		return v
 	}
-	v, ok = this.Body[n]
+	v, ok = this.Bodies()[n]
 	if ok {
 		return v
 	}
-	v, ok = this.Query[n]
+	v, ok = this.Queries()[n]
 	if ok {
 		return v
 	}

@@ -457,7 +457,7 @@ func (this *Response) Jsonp(i interface{}, s ...int) {
 		this.StatusCode = s[0]
 	}
 	body := this.json(i)
-	if cb, ok := req.Query[app.Get("jsonp callback name")]; ok {
+	if cb, ok := req.Queries()[app.Get("jsonp callback name")]; ok {
 		this.ContentType("text/javascript")
 		body = cb + " && " + cb + "(" + body + ");"
 	}

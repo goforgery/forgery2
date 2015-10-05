@@ -528,7 +528,7 @@ func TestResponse(t *testing.T) {
 		It("should return [{\"foo\":\"bar\"}]", func() {
 			app.Set("env", "prod")
 			res.app.Set("jsonp callback name", "callback")
-			res.req.Query["callback"] = "cb"
+			res.req.queries = map[string]string{"callback": "cb"}
 			res.Jsonp(map[string]string{"foo": "bar"}, 500)
 			w := buf.String()
 			AssertEqual(res.StatusCode, 500)
