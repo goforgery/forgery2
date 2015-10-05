@@ -44,13 +44,12 @@ type Response struct {
 }
 
 // Returns a new Response.
-func CreateResponse(writer http.ResponseWriter, app *Application /*, next func()*/) *Response {
+func CreateResponse(writer http.ResponseWriter, app *Application) *Response {
 	this := &Response{}
 	this.Writer = writer
 	this.StatusCode = 200
 	this.events = map[string][]func(){}
-	// this.SetNext(next)
-	this.SetApplication(app)
+	this.app = app
 	this.Charset = "utf-8"
 	this.Locals = map[string]string{}
 	return this
@@ -146,24 +145,13 @@ func (this *Response) End(data string) bool {
 // Return a clone of the this Response.
 func (this *Response) Clone() *Response {
 	r := CreateResponse(this.Writer, this.app)
-	r.SetNext(this.next)
 	r.SetRequest(this.req)
 	return r
-}
-
-// Set the Application this Response will use.
-func (this *Response) SetApplication(app *Application) {
-	this.app = app
 }
 
 // Set the Request this Response will use.
 func (this *Response) SetRequest(req *Request) {
 	this.req = req
-}
-
-// Set the Next function this Response will use.
-func (this *Response) SetNext(next func()) {
-	this.next = next
 }
 
 // Chainable alias of stackr's "res.StatusCode=".
@@ -564,9 +552,8 @@ func (this *Response) Render(view string, i ...interface{}) {
 	i = append(i, this.Locals)
 	s, err := this.app.Render(view, i...)
 	if err != nil {
-		// Need to do something about errors and next()
-		fmt.Println(err)
-		this.next()
+		// Need to do something about error reporting here.
+		this.Send(err.Error())
 		return
 	}
 	this.Send(s)

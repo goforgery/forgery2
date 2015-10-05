@@ -651,13 +651,6 @@ func TestResponse(t *testing.T) {
 		})
 	})
 
-	Describe("Render()", func() {
-
-		It("should return [skipped]", func() {
-			AssertEqual(true, true)
-		})
-	})
-
 	Describe("ContentType()", func() {
 
 		It("should return [foo/bar]", func() {
