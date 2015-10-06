@@ -67,3 +67,6 @@ jrebel.lic
 
 # paulp script
 /.lib/
+
+# Files
+coverage.html

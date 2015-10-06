@@ -119,6 +119,20 @@ func TestRequest(t *testing.T) {
 		})
 	})
 
+	Describe("File()", func() {
+
+		It("should return [bar]", func() {
+			req.files = map[string]interface{}{"foo": "bar"}
+			r := req.File("foo")
+			AssertEqual(r, "bar")
+		})
+		It("should return [bar]", func() {
+			req.Files(map[string]interface{}{"foo": "bar", "baz": "qux"})
+			r := req.File("baz")
+			AssertEqual(r, "qux")
+		})
+	})
+
 	Describe("Accepts()", func() {
 
 		It("should return [true]", func() {

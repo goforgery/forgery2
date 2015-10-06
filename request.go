@@ -39,8 +39,6 @@ type Request struct {
 	res *Response
 	// The application server.
 	app *Application
-	// Return the remote address, or when "trust proxy" is enabled - the upstream address.
-	ip string
 	// When "trust proxy" is `true`, parse the "X-Forwarded-For" ip address list and return a slice,
 	// otherwise an empty slice is returned. For example if the value were "client, proxy1, proxy2"
 	// you would receive the slice {"client", "proxy1", "proxy2"} where "proxy2" is the furthest down-stream.
@@ -94,21 +92,21 @@ func (this *Request) SetResponse(res *Response) {
 	this.res = res
 }
 
-// Returns the requesting IP.
+// Return the remote address, or when "trust proxy" is enabled - the upstream address.
 func (this *Request) Ip() string {
 	return this.Ips()[0]
 }
 
-// Returns the requesting IP chain.
+// When "trust proxy" is `true`, parse the "X-Forwarded-For" ip address list and return a slice,
+// otherwise an empty slice is returned. For example if the value were "client, proxy1, proxy2"
+// you would receive the slice {"client", "proxy1", "proxy2"} where "proxy2" is the furthest down-stream.
 func (this *Request) Ips() []string {
 	if this.ips == nil {
 		if t, v := this.app.Get("trust proxy"), this.Header.Get("X-Forwarded-For"); len(t) > 0 && len(v) > 0 {
 			s := regexp.MustCompile(" *, *").Split(v, -1)
-			this.ip = s[0]
 			this.ips = s
 		} else {
-			this.ip = this.RemoteAddr
-			this.ips = []string{}
+			this.ips = []string{this.RemoteAddr}
 		}
 	}
 	return this.ips
@@ -199,9 +197,12 @@ func (this *Request) File(key string) interface{} {
 }
 
 // Return a map of values passed as the request files.
-func (this *Request) Files() map[string]interface{} {
+func (this *Request) Files(f ...map[string]interface{}) map[string]interface{} {
 	if this.files == nil {
 		this.files = map[string]interface{}{}
+	}
+	if len(f) > 0 {
+		this.files = f[0]
 	}
 	return this.files
 }
