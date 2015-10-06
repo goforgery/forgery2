@@ -164,16 +164,13 @@ func (this *Request) Queries() map[string]string {
 func (this *Request) Param(n string) string {
 	var v string
 	var ok bool
-	v, ok = this.Params()[n]
-	if ok {
+	if v, ok = this.Params()[n]; ok {
 		return v
 	}
-	v, ok = this.Bodies()[n]
-	if ok {
+	if v, ok = this.Bodies()[n]; ok {
 		return v
 	}
-	v, ok = this.Queries()[n]
-	if ok {
+	if v, ok = this.Queries()[n]; ok {
 		return v
 	}
 	return ""
