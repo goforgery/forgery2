@@ -78,7 +78,7 @@ func TestRequest(t *testing.T) {
 	Describe("Param()", func() {
 
 		It("should return [bar]", func() {
-			req.Params = map[string]string{"foo": "bar"}
+			req.params = map[string]string{"foo": "bar"}
 			r := req.Param("foo")
 			AssertEqual(r, "bar")
 		})
@@ -96,7 +96,7 @@ func TestRequest(t *testing.T) {
 		})
 
 		It("should return [bar]", func() {
-			req.Params = map[string]string{"foo": "bar"}
+			req.params = map[string]string{"foo": "bar"}
 			req.bodies = map[string]string{"foo": "bar1"}
 			req.queries = map[string]string{"foo": "bar2"}
 			r := req.Param("foo")
@@ -111,7 +111,7 @@ func TestRequest(t *testing.T) {
 		})
 
 		It("should return []", func() {
-			req.Params = map[string]string{"foo": "bar"}
+			req.params = map[string]string{"foo": "bar"}
 			req.bodies = map[string]string{"foo": "bar1"}
 			req.queries = map[string]string{"foo": "bar2"}
 			r := req.Param("bar")

@@ -35,7 +35,7 @@ func (this *Router) AddRoute(verb string, path string, funcs ...func(*Request, *
 // Calls the function defined for each key in "req.Params" if available.
 func (this *Router) executeParamFuncs(req *Request, res *Response, next func()) bool {
 	// Call each "param" function if one is set.
-	for name := range req.Params {
+	for name := range req.Params() {
 		if pfn, ok := this.ParamFuncs[name]; ok {
 			pfn(req, res, next)
 			// If the response has been "closed" by a "param" function then return.
@@ -69,7 +69,7 @@ func (this *Router) handle(req *Request, res *Response, next func()) {
 		// If the route matches use it.
 		if params, ok := route.Match(req.Method, path); ok {
 			// Set the route "params" found in the path.
-			req.Params = params
+			req.Params(params)
 			// Set the matched route.
 			req.Route = route
 			// Call "param" functions if they are defined.

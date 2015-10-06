@@ -55,10 +55,10 @@ type Request struct {
 	Protocol string
 	// Check if a TLS connection is established. This is a short-hand for: "https" == req.Protocol
 	Secure bool
-	// This property is a slice containing properties mapped to the named route "parameters".
+	// This property is a map containing properties mapped to the named route "parameters".
 	// For example if you have the route "/user/:name", then the "name" property is available
 	// to you as req.params["name"]. This object defaults to {}.
-	Params map[string]string
+	params map[string]string
 	// The currently matched Route containing several properties such as the
 	// route's original path string, the regexp generated, and so on.
 	Route *Route
@@ -81,7 +81,6 @@ func CreateRequest(raw *http.Request, app *Application) *Request {
 	this.Xhr = this.Header.Get("X-Requested-With") == "XMLHttpRequest"
 	this.Protocol = this.URL.Scheme
 	this.Secure = this.Protocol == "https"
-	this.Params = map[string]string{}
 	this.app = app
 	// This could have been set by middleware so check if it's empty.
 	if this.Map == nil {
@@ -167,7 +166,7 @@ func (this *Request) Queries() map[string]string {
 func (this *Request) Param(n string) string {
 	var v string
 	var ok bool
-	v, ok = this.Params[n]
+	v, ok = this.Params()[n]
 	if ok {
 		return v
 	}
@@ -180,6 +179,18 @@ func (this *Request) Param(n string) string {
 		return v
 	}
 	return ""
+}
+
+// Returns a map containing properties mapped to the named route "parameters".
+// If a map is passed in it will replace the current map.
+func (this *Request) Params(p ...map[string]string) map[string]string {
+	if this.params == nil {
+		this.params = map[string]string{}
+	}
+	if len(p) > 0 {
+		this.params = p[0]
+	}
+	return this.params
 }
 
 // Return the value for the given key if found in the request files.
