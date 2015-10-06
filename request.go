@@ -75,7 +75,7 @@ func CreateRequest(raw *http.Request, app *Application) *Request {
 	this := &Request{}
 	this.Request = raw
 	this.Url = raw.URL.RequestURI()
-	this.OriginalUrl = raw.URL.RequestURI()
+	this.OriginalUrl = this.Url
 	// Helpers for standard headers.
 	this.Path = this.URL.Path
 	this.Xhr = this.Header.Get("X-Requested-With") == "XMLHttpRequest"
