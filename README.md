@@ -6,20 +6,6 @@ __UNSTABLE VERSION 2.0__: The current stable version is here [forgery](https://g
 
 Forgery is a minimal and flexible golang web application framework, providing a robust set of features for building single and multi-page, web applications.
 
-    package main
-
-    import(
-        "github.com/goforgery/forgery2"
-    )
-
-    func init() {
-        app := f.CreateApp()
-        app.Get("/", func(req *f.Request, res *f.Response, next func()) {
-            res.Send("Hello world.")
-        })
-        app.Listen(3000)
-    }
-
 * Robust routing
 * HTTP helpers (redirection, caching, etc)
 * View system supporting 1 template engine (hopefully more will come)
@@ -27,6 +13,30 @@ Forgery is a minimal and flexible golang web application framework, providing a 
 * Focus on high performance
 * Environment based configuration
 * High test coverage
+
+## Install
+
+    go get github.com/goforgery/forgery2
+
+## Use
+
+Starts a web server.
+
+```javascript
+package main
+
+import(
+    "github.com/goforgery/forgery2"
+)
+
+func main() {
+    app := f.CreateApp()
+    app.Get("/", func(req *f.Request, res *f.Response, next func()) {
+        res.Send("Hello world.")
+    })
+    app.Listen(3000)
+}
+```
 
 ## Testing
 
